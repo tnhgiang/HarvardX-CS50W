@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <title>Task</title>
+    </head>
+    <body>
+        <h1>Add Task</h1>
+        <!--Sent form back to task:add url via the request method of POST-->
+        <form action="{% url 'tasks:add' %}" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type='submit'>
+        </form>
+        <a href="{% url 'tasks:index' %}">View Tasks</a>
+    </body>
+</html>
