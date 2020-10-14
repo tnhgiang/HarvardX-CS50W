@@ -1,0 +1,63 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div>
+        <h2>Listing: {{ listing.title }}</h2>
+        <form action="{% url 'manipulate_listing' listing.id %}" method="POST">
+            {% csrf_token %}
+            {% if user_info == "owner" %}
+                <button type="submit" name='button' value='close' class="btn btn-danger">Close auction session</button>
+            {% elif user_info == "In watchlist" %}
+                <button type="submit" name='button' value='remove' class="btn btn-danger">Remove from Watchlist</button>
+            {% else %}
+                <button type="submit" name='button' value='add' class="btn btn-primary">Add to Watchlist</button>
+            {% endif %}
+        </form>
+        <img src="{{ listing.image_url }}">
+        <p>{{ listing.desctiption }}</p>
+        <h3>${{ listing.price }}</h3>
+    </div>
+    <div>
+        <p>{{ bid_info.count }} bid(s) so far</p>
+        <ul>
+            <li>The highest bid: {{ bid_info.max_bid }}</li>
+            <li>Your current bid: {{ bid_info.current_bid }}</li>
+        </ul>
+
+        <form action="{% url 'manipulate_listing' listing.id %}" method="POST">
+            {% csrf_token %}
+            <input class="form-control" type="number" name="bid" min={{ bid_info.acceptive_price }} placeholder="Bid" required>
+
+            <button type="submit" name='button' value="place-bid" class="btn btn-primary">Place Bid</button>
+        </form>
+    </div>
+    <div>
+        <h3>Details:</h3>
+        <ul>
+            <li>Created by: {{ listing.user }}</li>
+            <li>Created on: {{ listing.modified_time }}</li>
+            {% if listing.category == "" %}
+                <li>Category: No category</li>
+            {% else %}
+                <li>Category: {{ listing.category }}</h4>
+            {% endif %}
+        </ul>
+    </div>
+    <div>
+        <h3>Comments</h3>
+        <ul>
+            {% for comment in comments %}
+                <li>{{ comment.user }}: {{ comment.content }}</li>
+            {% empty %}
+                <li>No comments</li>
+            {% endfor %}
+        </ul>
+
+        <form action="{% url 'manipulate_listing' listing.id %}" method=POST>
+            {% csrf_token %}
+            <textarea class="form-control" name='comment' rows="5" placeholder="Leave comment"></textarea>
+            <button type="submit" name='button' value="add-comment" class="btn btn-primary">Add comment</button>
+        </form>
+    </div>
+
+{% endblock %}
